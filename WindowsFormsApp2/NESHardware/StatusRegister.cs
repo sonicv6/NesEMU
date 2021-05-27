@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace NesHardware
+namespace WindowsFormsApp2.NESHardware
 {
-    struct StatusRegister
+    public struct StatusRegister
     {
         public bool C;
         public bool Z;

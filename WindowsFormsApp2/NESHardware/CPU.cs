@@ -1,18 +1,16 @@
-﻿using System;
-using System.Reflection.Metadata.Ecma335;
-
-namespace NesHardware
+﻿namespace WindowsFormsApp2.NESHardware
 {
     public partial class CPU
     {
         //Registers
-        private byte acc;
-        private byte x;
-        private byte y;
-        private StatusRegister status;
-        private byte pointer;
-        private ushort pc;
+        public byte acc;
+        public byte x;
+        public byte y;
+        public StatusRegister status;
+        public byte pointer;
+        public ushort pc;
 
+        //Internal variables
         private Emulator emu;
         private AddressMode addressMode;
         private byte cycles;
@@ -28,8 +26,7 @@ namespace NesHardware
         {
             if (cycles == 0)
             {
-                Execute(Read(pc));
-                pc++;
+                Execute(Read(pc++));
             }
 
             cycles--;
@@ -76,12 +73,12 @@ namespace NesHardware
         }
         private byte Read(ushort addr)
         {
-            return emu.BusRead(addr);
+            return emu.CPURead(addr);
         }
 
         private void Write(ushort addr, byte data)
         {
-            emu.BusWrite(addr, data);
+            emu.CPUWrite(addr, data);
         }
     }
 }
