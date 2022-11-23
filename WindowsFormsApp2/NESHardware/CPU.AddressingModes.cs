@@ -30,7 +30,7 @@
         private void ZPY()
         {
             absAddr = (ushort) (Read(pc++) + y);
-            absAddr &= 0x00FF;
+            absAddr &= 0x00FF;  
             addressMode = AddressMode.ZPY;
         }
 
@@ -66,6 +66,7 @@
             ushort lowByte = Read(pc++);
             ushort highByte = Read(pc++);
             ushort ptr = (ushort) ((highByte << 8) | lowByte);
+            //Emulates long-running error in 6502 processors.
             if (lowByte == 0x00FF) absAddr = (ushort) ((Read((ushort) (ptr & 0xFF00)) << 8) | Read(ptr));
             else absAddr = (ushort) ((Read((ushort) (ptr + 1)) << 8) | Read(ptr)); 
             addressMode = AddressMode.IND;
@@ -74,8 +75,8 @@
         private void INX()
         {
             ushort temp = Read(pc++);
-            ushort lowByte = (ushort) (temp + x);
-            ushort highByte = (ushort) (temp + x + 1);
+            ushort lowByte = Read((ushort) ((temp + x) & 0xFF));
+            ushort highByte = Read((ushort) ((temp + x + 1) & 0xFF));
             absAddr = (ushort) ((highByte << 8) | lowByte);
             addressMode = AddressMode.INX;
         }
@@ -83,10 +84,10 @@
         private void INY()
         {
             ushort temp = Read(pc++);
-            ushort lowByte = temp;
-            ushort highByte = (ushort) (temp + 1);
+            ushort lowByte = Read((ushort) (temp & 0xFF));
+            ushort highByte = Read((ushort) ((temp + 1) & 0xFF));
             absAddr = (ushort) ((highByte << 8) | lowByte);
-            absAddr += 1;
+            absAddr += y;
             if ((absAddr & 0xFF00) != highByte << 8) cycles++;
             addressMode = AddressMode.INY;
         }
@@ -94,7 +95,7 @@
         private void REL()
         {
             relAddr = Read(pc++);
-            if ((relAddr & 0x80) > 0)
+            if ((relAddr & 0x80) != 0)
             {
                 relAddr |= 0xFF00;
             }

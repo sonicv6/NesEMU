@@ -63,7 +63,13 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="NESHardware\LoopyReg.cs" />
+    <Compile Include="NESHardware\Mappers\Mapper.cs" />
+    <Compile Include="NESHardware\Mappers\Mapper000.cs" />
     <Compile Include="NESHardware\PPU.cs" />
+    <Compile Include="NESHardware\PPUControl.cs" />
+    <Compile Include="NESHardware\PPUMask.cs" />
+    <Compile Include="NESHardware\PPUStatus.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NESHardware\StatusRegister.cs" />

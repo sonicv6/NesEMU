@@ -16,12 +16,7 @@ namespace WindowsFormsApp2.NESHardware
 
         private void SetNFlag(byte data)
         {
-            status.N = (data & 0x80) == 0x80;
-        }
-
-        private void SetCFlag(byte data)
-        {
-            status.C = (data & 0x80) == 0x80;
+            status.N = (data & 0x80) != 0;
         }
 
         private void GetRel()
@@ -31,48 +26,46 @@ namespace WindowsFormsApp2.NESHardware
 
         private void CheckPage()
         {
-            if ((absAddr & 0xFF00) != 0xFF00) cycles++;
+            if ((absAddr & 0xFF00) != (pc & 0xFF00)) cycles++;
         }
         //CPU instructions
         private void ADC()
         {
             Fetch();
-            byte result = (byte) (acc + fetched + Convert.ToInt32(status.C));
-            SetNFlag(result);
-            SetZFlag(result);
-            if ((fetched & acc) != (result & 0x80))
+            int result = (acc + fetched + Convert.ToInt32(status.C));
+            status.C = result > 255;
+            SetNFlag((byte)result);
+            SetZFlag((byte)result);
+            if (((acc ^ result) & ~(acc ^ fetched) & 0x80) > 0)
             {
                 status.V = true;
-                status.C = true;
             }
             else
             {
                 status.V = false;
-                status.C = false;
             }
 
-            acc = result;
+            acc = (byte)result;
         }
         private void AND()
         {
             Fetch();
-            acc &= fetched;
+            acc = (byte) (acc & fetched);
             SetZFlag(acc);
             SetNFlag(acc);
         }
         private void ASL()
         {
             if (addressMode != AddressMode.IMP) Fetch();
-            byte result = (byte) (fetched << 1);
-            SetCFlag(fetched);
-            SetZFlag(result);
-            SetNFlag(result);
-            if (addressMode == AddressMode.IMP) acc = result;
-            else Write(absAddr, result);
+            int result = fetched << 1;
+            status.C = result > 255;
+            SetZFlag((byte)result);
+            SetNFlag((byte)result);
+            if (addressMode == AddressMode.IMP) acc = (byte)result;
+            else Write(absAddr, (byte)result);
         }
         private void BCC()
         {
-            Fetch();
             if (!status.C)
             {
                 cycles++;
@@ -84,7 +77,6 @@ namespace WindowsFormsApp2.NESHardware
 
         private void BCS()
         {
-            Fetch();
             if (status.C)
             {
                 cycles++;
@@ -96,7 +88,6 @@ namespace WindowsFormsApp2.NESHardware
 
         private void BEQ()
         {
-            Fetch();
             if (status.Z)
             {
                 cycles++;
@@ -152,11 +143,15 @@ namespace WindowsFormsApp2.NESHardware
 
         private void BRK()
         {
-            Write((ushort) (0x100 + pointer--), (byte) (pc>>8));
-            Write((ushort) (0x100 + pointer--), (byte) (pc));
-            Write((ushort) (0x100 + pointer--), status.GetRegister());
-            pc = (ushort) (Read(0xFFFE) | (Read(0xFFFF) << 8));
+            pc++;
+            status.I = true;
+            Write((ushort) (0x100 + pointer--), (byte) ((pc >> 8) & 0xFF));
+            Write((ushort) (0x100 + pointer--), (byte) (pc & 0xFF));
             status.B = true;
+            Write((ushort) (0x100 + pointer--), status.Register);
+            status.B = false;
+
+            pc = (ushort) (Read(0xFFFF) << 8 | Read(0xFFFE));
         }
 
         private void BVC()
@@ -207,7 +202,7 @@ namespace WindowsFormsApp2.NESHardware
         {
             Fetch();
             byte compared = (byte) (acc - fetched);
-            status.C = acc > fetched;
+            status.C = acc >= fetched;
             SetZFlag(compared);
             SetNFlag(compared);
         }
@@ -216,7 +211,7 @@ namespace WindowsFormsApp2.NESHardware
         {
             Fetch();
             byte compared = (byte) (x - fetched);
-            status.C = x > fetched;
+            status.C = x >= fetched;
             SetZFlag(compared);
             SetNFlag(compared);
         }
@@ -225,7 +220,7 @@ namespace WindowsFormsApp2.NESHardware
         {
             Fetch();
             byte compared = (byte) (y - fetched);
-            status.C = y > fetched;
+            status.C = y >= fetched;
             SetZFlag(compared);
             SetNFlag(compared);
         }
@@ -329,7 +324,7 @@ namespace WindowsFormsApp2.NESHardware
         {
             if (addressMode != AddressMode.IMP) Fetch();
             byte result = (byte) (fetched >> 1);
-            SetCFlag(fetched);
+            status.C = (fetched & 0x01) != 0;
             SetZFlag(result);
             SetNFlag(result);
             if (addressMode == AddressMode.IMP) acc = result;
@@ -355,8 +350,9 @@ namespace WindowsFormsApp2.NESHardware
 
         private void PHP()
         {
-            var s = status.GetRegister();
-            Write((ushort) (0x100 + pointer--), status.GetRegister());
+            Write((ushort) (0x100 + pointer--), (byte) (status.Register | 16 | 32));
+            status.B = false;
+            status.U = false;
         }
 
         private void PLA()
@@ -368,32 +364,38 @@ namespace WindowsFormsApp2.NESHardware
 
         private void PLP()
         {
-            status.SetRegister(Read((ushort) (0x100 + ++pointer)));
+            status.Register = Read((ushort) (0x100 + ++pointer));
+            status.B = false;
+            status.U = true;
         }
 
         private void ROL()
         {
             if (addressMode != AddressMode.IMP) Fetch();
             byte result = (byte) (fetched << 1);
-            result += (byte) System.Convert.ToInt32(status.C);
-            status.C = (fetched & 0x80) == 0x80;
-            if (addressMode == AddressMode.IMP) acc = result;
-            else Write(absAddr, result);
+            result += Convert.ToByte(status.C);
+            status.C = (fetched & 0x80) != 0;
+            SetNFlag(result);
+            SetZFlag(result);
+            if (addressMode == AddressMode.IMP) acc = (byte)result;
+            else Write(absAddr, (byte)result);
         }
 
         private void ROR()
         {
             if (addressMode != AddressMode.IMP) Fetch();
             byte result = (byte) (fetched  >> 1);
-            result =  (byte) (result | (System.Convert.ToInt32(status.C)<<7));
-            status.C = (fetched & 0x01) == 0x01;
+            result =  (byte) (result | (Convert.ToInt32(status.C)<<7));
+            status.C = (fetched & 0x01) != 0;
+            SetNFlag(result);
+            SetZFlag(result);
             if (addressMode == AddressMode.IMP) acc = result;
             else Write(absAddr, result);
         }
 
         private void RTI()
         {
-            status.SetRegister(Read((ushort) (0x100 + ++pointer)));
+            status.Register = Read((ushort) (0x100 + ++pointer));
             pc = (ushort) (Read((ushort) (0x100 + ++pointer)) | (Read((ushort) (0x100 + ++pointer)) << 8));
         }
 
@@ -407,21 +409,20 @@ namespace WindowsFormsApp2.NESHardware
         {
             Fetch();
             var val = fetched ^ 0xFF;
-            byte result = (byte) (acc + fetched + Convert.ToInt32(status.C));
-            SetNFlag(result);
-            SetZFlag(result);
-            if ((fetched & acc) != (result & 0x80))
+            int result = (acc + val + Convert.ToInt32(status.C));
+            status.C = result > 255;
+            SetNFlag((byte)result);
+            SetZFlag((byte)result);
+            if (((acc ^ result) & (acc ^ fetched) & 0x80) > 0)
             {
                 status.V = true;
-                status.C = true;
             }
             else
             {
                 status.V = false;
-                status.C = false;
             }
 
-            acc = result;
+            acc = (byte) result;
         }
 
         private void SEC()
@@ -492,6 +493,12 @@ namespace WindowsFormsApp2.NESHardware
             acc = y;
             SetZFlag(acc);
             SetNFlag(acc);
+        }
+
+        //Illegal instructions
+        private void SAX()
+        {
+            Write(absAddr, (byte) (acc & x));
         }
     }
 }

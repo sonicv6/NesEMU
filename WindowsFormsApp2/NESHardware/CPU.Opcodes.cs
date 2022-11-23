@@ -1,4 +1,6 @@
-﻿namespace WindowsFormsApp2.NESHardware
+﻿using System.Collections.Generic;
+
+namespace WindowsFormsApp2.NESHardware
 {
     public partial class CPU
     {
@@ -816,6 +818,375 @@
                     cycles += 2;
                     IMP();
                     TYA();
+                    break;
+
+                //Illegal codes
+
+                //Illegal NOP codes
+                case 0x80:
+                    cycles += 2;
+                    IMM();
+                    NOP();
+                    break;
+                case 0x04:
+                case 0x44:
+                case 0x64:
+                    cycles += 3;
+                    ZP0();
+                    NOP();
+                    break;
+                case 0x0C:
+                    cycles += 4;
+                    ABS();
+                    NOP();
+                    break;
+                case 0x14:
+                case 0x34:
+                case 0x54:
+                case 0x74:
+                case 0xD4:
+                case 0xF4:
+                    cycles += 4;
+                    ZPX();
+                    NOP();
+                    break;
+                case 0x1C:
+                case 0x3C:
+                case 0x5C:
+                case 0x7C:
+                case 0xDC:
+                case 0xFC:
+                    cycles += 4;
+                    ABX();
+                    NOP();
+                    break;
+                //Illegal LAX codes
+                case 0xA3:
+                    cycles += 6;
+                    INX();
+                    LDA();
+                    TAX();
+                    break;
+                case 0xA7:
+                    cycles += 3;
+                    ZP0();
+                    LDA();
+                    TAX();
+                    break;
+                case 0xAB:
+                    cycles += 2;
+                    IMM();
+                    LDA();
+                    TAX();
+                    break;
+                case 0xAF:
+                    cycles += 4;
+                    ABS();
+                    LDA();
+                    TAX();
+                    break;
+                case 0xB3:
+                    cycles += 5;
+                    INY();
+                    LDA();
+                    TAX();
+                    break;
+                case 0xB7:
+                    cycles += 4;
+                    ZPY();
+                    LDA();
+                    TAX();
+                    break;
+                case 0xBF:
+                    cycles += 4;
+                    ABY();
+                    LDA();
+                    TAX();
+                    break;
+                //Illegal SAX codes
+                case 0x83:
+                    cycles += 6;
+                    INX();
+                    SAX();
+                    break;
+                case 0x87:
+                    cycles += 3;
+                    ZP0();
+                    SAX();
+                    break;
+                case 0x8F:
+                    cycles += 4;
+                    ABS();
+                    SAX();
+                    break;
+                case 0x97:
+                    cycles += 4;
+                    ZPY();
+                    SAX();
+                    break;
+                //Illegal SBC codes
+                case 0xEB:
+                    cycles += 2;
+                    IMM();
+                    SBC();
+                    break;
+                //Illegal DCP codes
+                case 0xC3:
+                    cycles += 8;
+                    INX();
+                    DEC();
+                    CMP();
+                    break;
+                case 0xC7:
+                    cycles += 5;
+                    ZP0();
+                    DEC();
+                    CMP();
+                    break;
+                case 0xCF:
+                    cycles += 6;
+                    ABS();
+                    DEC();
+                    CMP();
+                    break;
+                case 0xD3:
+                    cycles += 8;
+                    INY();
+                    DEC();
+                    CMP();
+                    break;
+                case 0xD7:
+                    cycles += 6;
+                    ZPX();
+                    DEC();
+                    CMP();
+                    break;
+                case 0xDB:
+                    cycles += 7;
+                    ABY();
+                    DEC();
+                    CMP();
+                    break;
+                case 0xDF:
+                    cycles += 7;
+                    ABX();
+                    DEC();
+                    CMP();
+                    break;
+                //Illegal ISC codes
+                case 0xE3:
+                    cycles += 8;
+                    INX();
+                    INC();
+                    SBC();
+                    break;
+                case 0xE7:
+                    cycles += 5;
+                    ZP0();
+                    INC();
+                    SBC();
+                    break;
+                case 0xEF:
+                    cycles += 6;
+                    ABS();
+                    INC();
+                    SBC();
+                    break;
+                case 0xF3:
+                    cycles += 8;
+                    INY();
+                    INC();
+                    SBC();
+                    break;
+                case 0xF7:
+                    cycles += 6;
+                    ZPX();
+                    INC();
+                    SBC();
+                    break;
+                case 0xFB:
+                    cycles += 7;
+                    ABY();
+                    INC();
+                    SBC();
+                    break;
+                case 0xFF:
+                    cycles += 7;
+                    ABX();
+                    INC();
+                    SBC();
+                    break;
+                //Illegal SLO codes
+                case 0x03:
+                    cycles += 8;
+                    INX();
+                    ASL();
+                    ORA();
+                    break;
+                case 0x07:
+                    cycles += 5;
+                    ZP0();
+                    ASL();
+                    ORA();
+                    break;
+                case 0x0F:
+                    cycles += 6;
+                    ABS();
+                    ASL();
+                    ORA();
+                    break;
+                case 0x13:
+                    cycles += 8;
+                    INY();
+                    ASL();
+                    ORA();
+                    break;
+                case 0x17:
+                    cycles += 6;
+                    ZPX();
+                    ASL();
+                    ORA();
+                    break;
+                case 0x1B:
+                    cycles += 7;
+                    ABY();
+                    ASL();
+                    ORA();
+                    break;
+                case 0x1F:
+                    cycles += 7;
+                    ABX();
+                    ASL();
+                    ORA();
+                    break;
+                //Illegal RLA codes
+                case 0x23:
+                    cycles += 8;
+                    INX();
+                    ROL();
+                    AND();
+                    break;
+                case 0x27:
+                    cycles += 5;
+                    ZP0();
+                    ROL();
+                    AND();
+                    break;
+                case 0x2F:
+                    cycles += 6;
+                    ABS();
+                    ROL();
+                    AND();
+                    break;
+                case 0x33:
+                    cycles += 8;
+                    INY();
+                    ROL();
+                    AND();
+                    break;
+                case 0x37:
+                    cycles += 6;
+                    ZPX();
+                    ROL();
+                    AND();
+                    break;
+                case 0x3B:
+                    cycles += 7;
+                    ABY();
+                    ROL();
+                    AND();
+                    break;
+                case 0x3F:
+                    cycles += 7;
+                    ABX();
+                    ROL();
+                    AND();
+                    break;
+                //Illegal SRE codes
+                case 0x43:
+                    cycles += 8;
+                    INX();
+                    LSR();
+                    EOR();
+                    break;
+                case 0x47:
+                    cycles += 5;
+                    ZP0();
+                    LSR();
+                    EOR();
+                    break;
+                case 0x4F:
+                    cycles += 6;
+                    ABS();
+                    LSR();
+                    EOR();
+                    break;
+                case 0x53:
+                    cycles += 8;
+                    INY();
+                    LSR();
+                    EOR();
+                    break;
+                case 0x57:
+                    cycles += 6;
+                    ZPX();
+                    LSR();
+                    EOR();
+                    break;
+                case 0x5B:
+                    cycles += 7;
+                    ABY();
+                    LSR();
+                    EOR();
+                    break;
+                case 0x5F:
+                    cycles += 7;
+                    ABX();
+                    LSR();
+                    EOR();
+                    break;
+                //Illegal RRA codes
+                case 0x63:
+                    cycles += 8;
+                    INX();
+                    ROR();
+                    ADC();
+                    break;
+                case 0x67:
+                    cycles += 5;
+                    ZP0();
+                    ROR();
+                    ADC();
+                    break;
+                case 0x6F:
+                    cycles += 6;
+                    ABS();
+                    ROR();
+                    ADC();
+                    break;
+                case 0x73:
+                    cycles += 8;
+                    INY();
+                    ROR();
+                    ADC();
+                    break;
+                case 0x77:
+                    cycles += 6;
+                    ZPX();
+                    ROR();
+                    ADC();
+                    break;
+                case 0x7B:
+                    cycles += 7;
+                    ABY();
+                    ROR();
+                    ADC();
+                    break;
+                case 0x7F:
+                    cycles += 7;
+                    ABX();
+                    ROR();
+                    ADC();
                     break;
             }
         }

@@ -54,6 +54,13 @@ namespace WindowsFormsApp2
             this.button1 = new System.Windows.Forms.Button();
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // xLabel
@@ -283,11 +290,69 @@ namespace WindowsFormsApp2
             this.label22.TabIndex = 24;
             this.label22.Text = "label22";
             // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(296, 40);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(480, 120);
+            this.panel1.TabIndex = 25;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(27, 335);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(25, 13);
+            this.label23.TabIndex = 27;
+            this.label23.Text = "02h";
+            this.label23.Click += new System.EventHandler(this.label23_Click);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(24, 373);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(25, 13);
+            this.label24.TabIndex = 28;
+            this.label24.Text = "03h";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(74, 335);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(41, 13);
+            this.label25.TabIndex = 29;
+            this.label25.Text = "label25";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(71, 373);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(41, 13);
+            this.label26.TabIndex = 30;
+            this.label26.Text = "label26";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(439, 183);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(256, 240);
+            this.pictureBox1.TabIndex = 26;
+            this.pictureBox1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label26);
+            this.Controls.Add(this.label25);
+            this.Controls.Add(this.label24);
+            this.Controls.Add(this.label23);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.label21);
             this.Controls.Add(this.button1);
@@ -316,6 +381,7 @@ namespace WindowsFormsApp2
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -348,6 +414,12 @@ namespace WindowsFormsApp2
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
